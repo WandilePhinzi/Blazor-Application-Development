@@ -1,0 +1,92 @@
+﻿@page "/edit-project/{ProjectId:guid}"
+@using TelemetryPortal.Data
+@using TelemetryPortal.Models
+@rendermode InteractiveServer
+
+<h3>Edit Project</h3>
+
+<EditForm Model="project" OnValidSubmit="HandleValidSubmit" FormName="EditProjectForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="projectName">Project Name</label>
+        <InputText id="projectName" class="form-control" @bind-Value="project.ProjectName" />
+    </div>
+
+    <div class="form-group">
+        <label for="projectDescription">Project Description</label>
+        <InputText id="projectDescription" class="form-control" @bind-Value="project.ProjectDescription" />
+    </div>
+
+    <div class="form-group">
+        <label for="projectCreationDate">Project Creation Date</label>
+        <InputDate id="projectCreationDate" class="form-control" @bind-Value="project.ProjectCreationDate" />
+    </div>
+
+    <div class="form-group">
+        <label for="projectStatus">Project Status</label>
+        <InputText id="projectStatus" class="form-control" @bind-Value="project.ProjectStatus" />
+    </div>
+
+    <div class="form-group">
+        <label for="ClientId">Client GUID</label>
+        <InputText id="ClientId" class="form-control" @bind-Value="ClientIdString" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a class="btn btn-secondary" href="/projects">Back to List</a>
+</EditForm>
+
+@code {
+    [Inject]
+    TechtrendsContext DbContext { get; set; }
+    [Inject]
+    NavigationManager navigationManager { get; set; }
+
+    [Parameter]
+    public Guid ProjectId { get; set; }
+
+    private Project project = new Project();
+
+    private string ClientIdString
+    {
+        get => project.ClientId.ToString();
+        set
+        {
+            if (Guid.TryParse(value, out var guid))
+            {
+                project.ClientId = guid;
+            }
+            else
+            {
+                project.ClientId = Guid.Empty; // Handle as needed
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load the project details from the database
+        project = await DbContext.Projects.FindAsync(ProjectId);
+
+        if (project == null)
+        {
+            navigationManager.NavigateTo("/projects");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        // Ensure that project properties are populated
+        Console.WriteLine($"ProjectName: {project.ProjectName}");
+        Console.WriteLine($"ProjectDescription: {project.ProjectDescription}");
+        Console.WriteLine($"ProjectCreationDate: {project.ProjectCreationDate}");
+        Console.WriteLine($"ProjectStatus: {project.ProjectStatus}");
+        Console.WriteLine($"ClientId: {project.ClientId}");
+
+        DbContext.Projects.Update(project);
+        await DbContext.SaveChangesAsync();
+        navigationManager.NavigateTo("/projects");
+    }
+}

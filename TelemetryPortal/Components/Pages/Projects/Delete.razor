@@ -1,0 +1,50 @@
+﻿@page "/delete-project/{ProjectId:guid}"
+@using TelemetryPortal.Data
+@using TelemetryPortal.Models
+@rendermode InteractiveServer
+
+<h3>Delete Project</h3>
+
+@if (project == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>Are you sure you want to delete the project <strong>@project.ProjectName</strong>?</p>
+
+    <button class="btn btn-danger" @onclick="ConfirmDelete">Delete</button>
+    <a class="btn btn-secondary" href="/projects">Cancel</a>
+}
+
+@code {
+    [Inject]
+    TechtrendsContext DbContext { get; set; }
+    [Inject]
+    NavigationManager navigationManager { get; set; }
+
+    [Parameter]
+    public Guid ProjectId { get; set; }
+
+    private Project project;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load the project details from the database
+        project = await DbContext.Projects.FindAsync(ProjectId);
+        if (project == null)
+        {
+            navigationManager.NavigateTo("/projects");
+        }
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (project != null)
+        {
+            DbContext.Projects.Remove(project);
+            await DbContext.SaveChangesAsync();
+            navigationManager.NavigateTo("/projects");
+        }
+    }
+}

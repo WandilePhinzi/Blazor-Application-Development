@@ -1,0 +1,48 @@
+﻿@page "/details-project/{ProjectId:guid}"
+@using TelemetryPortal.Data
+@using TelemetryPortal.Models
+@rendermode InteractiveServer
+
+<h3>Project Details</h3>
+
+@if (project == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@project.ProjectName</h5>
+            <p class="card-text"><strong>Description:</strong> @project.ProjectDescription</p>
+            <p class="card-text"><strong>Creation Date:</strong> @project.ProjectCreationDate</p>
+            <p class="card-text"><strong>Status:</strong> @project.ProjectStatus</p>
+            <p class="card-text"><strong>Client GUID:</strong> @project.ClientId</p>
+
+            <a class="btn btn-primary" href="/edit-project/@project.ProjectId">Edit</a>
+            <a class="btn btn-secondary" href="/projects">Back to List</a>
+        </div>
+    </div>
+}
+
+@code {
+    [Inject]
+    TechtrendsContext DbContext { get; set; }
+    [Inject]
+    NavigationManager navigationManager { get; set; }
+
+    [Parameter]
+    public Guid ProjectId { get; set; }
+
+    private Project project;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load the project details from the database
+        project = await DbContext.Projects.FindAsync(ProjectId);
+        if (project == null)
+        {
+            navigationManager.NavigateTo("/projects");
+        }
+    }
+}

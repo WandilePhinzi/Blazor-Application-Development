@@ -1,0 +1,50 @@
+﻿@page "/delete-client/{ClientId:guid}"
+@using Microsoft.EntityFrameworkCore
+@using TelemetryPortal.Data
+@using TelemetryPortal.Models
+@rendermode InteractiveServer
+
+<h3>Delete Client</h3>
+
+@if (client == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>Are you sure you want to delete the client <strong>@client.ClientName</strong>?</p>
+
+    <button class="btn btn-danger" @onclick="ConfirmDelete">Delete</button>
+    <a class="btn btn-secondary" href="/clients">Cancel</a>
+}
+
+@code {
+    [Inject]
+    TechtrendsContext DbContext { get; set; }
+    [Inject]
+    NavigationManager navigationManager { get; set; }
+
+    [Parameter]
+    public Guid ClientId { get; set; }
+
+    private Client client;
+
+    protected override async Task OnInitializedAsync()
+    {
+        client = await DbContext.Clients.FindAsync(ClientId);
+        if (client == null)
+        {
+            navigationManager.NavigateTo("/clients");
+        }
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (client != null)
+        {
+            DbContext.Clients.Remove(client);
+            await DbContext.SaveChangesAsync();
+            navigationManager.NavigateTo("/clients");
+        }
+    }
+}

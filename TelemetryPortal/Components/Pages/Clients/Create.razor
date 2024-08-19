@@ -1,0 +1,51 @@
+﻿@page "/create-client"
+@using Microsoft.EntityFrameworkCore
+@using TelemetryPortal.Data
+@using TelemetryPortal.Models
+@rendermode InteractiveServer
+
+<h3>Create New Client</h3>
+
+<EditForm Model="newClient" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="clientName">Client Name</label>
+        <InputText id="clientName" class="form-control" @bind-Value="newClient.ClientName" />
+    </div>
+
+    <div class="form-group">
+        <label for="primaryContactEmail">Primary Contact Email</label>
+        <InputText id="primaryContactEmail" class="form-control" @bind-Value="newClient.PrimaryContactEmail" />
+    </div>
+
+    <div class="form-group">
+        <label for="dateOnboarded">Date Onboarded</label>
+        <InputDate id="dateOnboarded" class="form-control" @bind-Value="newClient.DateOnboarded" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a class="btn btn-secondary" href="/clients">Back to List</a>
+</EditForm>
+
+@code {
+    [Inject]
+    TechtrendsContext DbContext { get; set; }
+    [Inject]
+    NavigationManager navigationManager { get; set; }
+
+    private Client newClient = new Client();
+
+    private async Task HandleValidSubmit()
+    {
+        newClient.ClientId = Guid.NewGuid();
+
+        // Add the new client to the database
+        DbContext.Clients.Add(newClient);
+        await DbContext.SaveChangesAsync();
+
+        // Redirect to the clients list page
+        navigationManager.NavigateTo("/clients");
+    }
+}

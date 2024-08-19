@@ -1,0 +1,66 @@
+﻿@page "/clients"
+@using Microsoft.EntityFrameworkCore
+@using TelemetryPortal.Data
+@using TelemetryPortal.Models
+@rendermode InteractiveServer
+
+<h3>Clients</h3>
+<p>
+    <button class="btn btn-primary" @onclick="Create">Create</button>
+</p>
+
+@if (clients == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (clients.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@nameof(Client.ClientName)</th>
+                <th>@nameof(Client.PrimaryContactEmail)</th>
+                <th>@nameof(Client.DateOnboarded)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var client in clients)
+            {
+                <tr>
+                    <td>@client.ClientName</td>
+                    <td>@client.PrimaryContactEmail</td>
+                    <td>@client.DateOnboarded</td>
+                    <td>
+                        <a class="btn btn-primary" href="/edit-client/@client.ClientId">Edit</a>
+                        <a class="btn btn-secondary" href="/details-client/@client.ClientId">Details</a>
+                        <a class="btn btn-danger" href="/delete-client/@client.ClientId">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No clients found.</p>
+}
+
+@code {
+    [Inject]
+    TechtrendsContext DbContext { get; set; }
+    [Inject]
+    NavigationManager navigationManager { get; set; }
+
+    private List<Client> clients;
+
+    protected override async Task OnInitializedAsync()
+    {
+        clients = await DbContext.Clients.ToListAsync();
+    }
+
+    public async Task Create()
+    {
+        navigationManager.NavigateTo("create-client");
+    }
+}
