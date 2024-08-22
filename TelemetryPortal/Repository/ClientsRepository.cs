@@ -1,11 +1,19 @@
+<<<<<<< HEAD
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+=======
+﻿using Microsoft.EntityFrameworkCore;
+>>>>>>> cc7a4de7b06adad18bc9fb047dc96a39d208af56
 using TelemetryPortal.Data;
 using TelemetryPortal.Models;
 
 namespace TelemetryPortal.Repository
 {
+<<<<<<< HEAD
     public class ClientsRepository : IClientsRepository
+=======
+    public class ClientsRepository :IClientsRepository
+>>>>>>> cc7a4de7b06adad18bc9fb047dc96a39d208af56
     {
         private readonly TechtrendsContext techtrendsContext;
 
@@ -21,9 +29,15 @@ namespace TelemetryPortal.Repository
         }
 
 
+<<<<<<< HEAD
         public async Task<TelemetryPortal.Models.Client> GetByIdAsync(int ClientID)
         {
             return await techtrendsContext.Clients.FindAsync(ClientID);
+=======
+        public async Task<TelemetryPortal.Models.Client> GetByIdAsync(int ClientId)
+        {
+            return await techtrendsContext.Clients.FindAsync(ClientId);
+>>>>>>> cc7a4de7b06adad18bc9fb047dc96a39d208af56
         }
 
         public async Task<TelemetryPortal.Models.Client> InsertAsync(TelemetryPortal.Models.Client client)
@@ -50,16 +64,28 @@ namespace TelemetryPortal.Repository
 
         public async Task DeleteAsync(int ClientId)
         {
+<<<<<<< HEAD
             var clientToDelete = await techtrendsContext.Clients.FindAsync(ClientId);
 
             if (clientToDelete != null)
             {
                 techtrendsContext.Clients.Remove(clientToDelete);
+=======
+            var ClientToDelete = await techtrendsContext.Clients.FindAsync(ClientId);
+
+            if (ClientToDelete != null)
+            {
+                techtrendsContext.Clients.Remove(ClientToDelete);
+>>>>>>> cc7a4de7b06adad18bc9fb047dc96a39d208af56
                 await techtrendsContext.SaveChangesAsync();
             }
             else
             {
+<<<<<<< HEAD
                 //Handle client not found scenario (e.g., throw an exception)
+=======
+                //Handle project not found scenario (e.g., throw an exception)
+>>>>>>> cc7a4de7b06adad18bc9fb047dc96a39d208af56
                 throw new Exception("Client not found");
             }
 

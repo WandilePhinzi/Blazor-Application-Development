@@ -41,6 +41,9 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+builder.Services.AddScoped<IClientsRepository, ClientsRepository>();
+builder.Services.AddScoped<IProjectsRepository, ProjectsRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -69,5 +72,8 @@ app.MapAdditionalIdentityEndpoints();
 app.Run();
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> cc7a4de7b06adad18bc9fb047dc96a39d208af56
