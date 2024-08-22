@@ -16,7 +16,7 @@ namespace TelemetryPortal.Repository
         }
 
 
-        public async Task <IEnumerable <TelemetryPortal.Models.Project>> GetAllAsync()
+        public async Task <IEnumerable <TelemetryPortal.Models.Project>> GetAllProjectsAsync()
         {
             return await techtrendsContext.Projects.ToListAsync();
         }
