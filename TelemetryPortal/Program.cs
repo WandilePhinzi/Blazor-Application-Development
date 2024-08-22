@@ -5,6 +5,7 @@ using TelemetryPortal.Components;
 using TelemetryPortal.Components.Account;
 using TelemetryPortal.Data;
 using TelemetryPortal.Models;
+using TelemetryPortal.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,9 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+builder.Services.AddScoped<IClientsRepository, ClientsRepository>();
+builder.Services.AddScoped<IProjectsRepository, ProjectsRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -64,3 +68,5 @@ app.MapRazorComponents<App>()
 app.MapAdditionalIdentityEndpoints();
 
 app.Run();
+
+
