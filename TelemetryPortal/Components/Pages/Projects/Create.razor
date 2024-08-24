@@ -2,6 +2,7 @@
 @using TelemetryPortal.Data
 @using TelemetryPortal.Models
 @rendermode InteractiveServer
+@using TelemetryPortal.Repository
 
 <h3>Create New Project</h3>
 
@@ -41,7 +42,7 @@
 
 @code {
     [Inject]
-    TechtrendsContext DbContext { get; set; }
+    IProjectsRepository <Project> ProjectsRepository { get; set; }
     [Inject]
     NavigationManager navigationManager { get; set; }
 
@@ -73,10 +74,10 @@
             Console.WriteLine($"ProjectDescription: {newProject.ProjectDescription}");
             Console.WriteLine($"ProjectCreationDate: {newProject.ProjectCreationDate}");
             Console.WriteLine($"ProjectStatus: {newProject.ProjectStatus}");
-            //Console.WriteLine($"ClientId: {newProject.ClientId}");
+            Console.WriteLine($"ClientId: {newProject.ClientId}");
 
-            DbContext.Projects.Add(newProject);
-            await DbContext.SaveChangesAsync();
+            await ProjectsRepository.InsertAsync(newProject);
+            await ProjectsRepository.SaveChangesAsync();
             navigationManager.NavigateTo("/projects");
         }
         else

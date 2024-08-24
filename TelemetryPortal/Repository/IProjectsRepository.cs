@@ -7,5 +7,7 @@
         Task<T> InsertAsync(T project);
        Task <T> UpdateAsync(T project);
        Task DeleteAsync(Guid ProjectID);
+
+        Task SaveChangesAsync();
     }
 }

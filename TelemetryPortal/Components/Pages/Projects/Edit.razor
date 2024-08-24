@@ -2,6 +2,7 @@
 @using TelemetryPortal.Data
 @using TelemetryPortal.Models
 @rendermode InteractiveServer
+@using TelemetryPortal.Repository
 
 <h3>Edit Project</h3>
 
@@ -40,7 +41,7 @@
 
 @code {
     [Inject]
-    TechtrendsContext DbContext { get; set; }
+    IProjectsRepository<Project> ProjectsRepository { get; set; }
     [Inject]
     NavigationManager navigationManager { get; set; }
 
@@ -52,6 +53,7 @@
     private string ClientIdString
     {
         get => project.ClientId.ToString();
+
         set
         {
             if (Guid.TryParse(value, out var guid))
@@ -68,7 +70,7 @@
     protected override async Task OnInitializedAsync()
     {
         // Load the project details from the database
-        project = await DbContext.Projects.FindAsync(ProjectId);
+        project = await ProjectsRepository.GetByIdAsync(ProjectId);
 
         if (project == null)
         {
@@ -85,8 +87,8 @@
         Console.WriteLine($"ProjectStatus: {project.ProjectStatus}");
         Console.WriteLine($"ClientId: {project.ClientId}");
 
-        DbContext.Projects.Update(project);
-        await DbContext.SaveChangesAsync();
+        ProjectsRepository.UpdateAsync(project);
+        await ProjectsRepository.SaveChangesAsync();
         navigationManager.NavigateTo("/projects");
     }
 }

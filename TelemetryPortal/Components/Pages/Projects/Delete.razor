@@ -2,6 +2,7 @@
 @using TelemetryPortal.Data
 @using TelemetryPortal.Models
 @rendermode InteractiveServer
+@using TelemetryPortal.Repository
 
 <h3>Delete Project</h3>
 
@@ -19,7 +20,7 @@ else
 
 @code {
     [Inject]
-    TechtrendsContext DbContext { get; set; }
+    IProjectsRepository <Project> ProjectsRepository{ get; set; }
     [Inject]
     NavigationManager navigationManager { get; set; }
 
@@ -31,7 +32,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         // Load the project details from the database
-        project = await DbContext.Projects.FindAsync(ProjectId);
+        project = await ProjectsRepository.GetByIdAsync(ProjectId);
         if (project == null)
         {
             navigationManager.NavigateTo("/projects");
@@ -42,8 +43,8 @@ else
     {
         if (project != null)
         {
-            DbContext.Projects.Remove(project);
-            await DbContext.SaveChangesAsync();
+            ProjectsRepository.DeleteAsync(ProjectId);
+            await ProjectsRepository.SaveChangesAsync();
             navigationManager.NavigateTo("/projects");
         }
     }

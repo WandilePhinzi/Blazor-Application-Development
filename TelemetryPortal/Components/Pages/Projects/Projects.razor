@@ -3,6 +3,7 @@
 @using TelemetryPortal.Data
 @using TelemetryPortal.Models
 @rendermode InteractiveServer
+@using TelemetryPortal.Repository
 <PageTitle>Projects</PageTitle>
 
 <h1>Projects</h1>
@@ -47,14 +48,14 @@
 
 @code {
     [Inject]
-    TechtrendsContext DbContext { get; set; }
+    IProjectsRepository<Project> ProjectsRepository { get; set; }
     [Inject]
     NavigationManager navigationManager { get; set; }
     private List<Project> projects;
 
     protected override async Task OnInitializedAsync()
     {
-        projects = await DbContext.Projects.ToListAsync();
+        projects = (List<Project>)await ProjectsRepository.GetAllProjectsAsync();
     }
 
     public async Task Create()

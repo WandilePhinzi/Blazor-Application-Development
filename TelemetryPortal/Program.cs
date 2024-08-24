@@ -31,7 +31,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDbContext<TechtrendsContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddScoped<IProjectsRepository, ProjectsRepository>();
+builder.Services.AddScoped<IProjectsRepository<Project>, ProjectsRepository>();
 builder.Services.AddScoped<IRepository<Client>, ClientsRepository>();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -41,8 +41,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-builder.Services.AddScoped<IRepository<Client>, ClientsRepository>();
-builder.Services.AddScoped<IProjectsRepository, ProjectsRepository>();
+
 
 var app = builder.Build();
 

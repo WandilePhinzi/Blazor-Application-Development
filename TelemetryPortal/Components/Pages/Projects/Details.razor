@@ -2,7 +2,7 @@
 @using TelemetryPortal.Data
 @using TelemetryPortal.Models
 @rendermode InteractiveServer
-
+@using TelemetryPortal.Repository
 <h3>Project Details</h3>
 
 @if (project == null)
@@ -27,7 +27,7 @@ else
 
 @code {
     [Inject]
-    TechtrendsContext DbContext { get; set; }
+    IProjectsRepository<Project> ProjectsRepository { get; set; }
     [Inject]
     NavigationManager navigationManager { get; set; }
 
@@ -39,7 +39,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         // Load the project details from the database
-        project = await DbContext.Projects.FindAsync(ProjectId);
+        project = await ProjectsRepository.GetByIdAsync(ProjectId);
         if (project == null)
         {
             navigationManager.NavigateTo("/projects");
