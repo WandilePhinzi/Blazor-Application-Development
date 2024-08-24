@@ -1,11 +1,12 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TelemetryPortal.Data;
 using TelemetryPortal.Models;
+using System;
+using Microsoft.Identity.Client;
 
 namespace TelemetryPortal.Repository
 {
-    public class ProjectsRepository : IProjectsRepository
+    public class ProjectsRepository : IProjectsRepository <Project>
     {
 
         private readonly TechtrendsContext techtrendsContext;
@@ -16,25 +17,25 @@ namespace TelemetryPortal.Repository
         }
 
 
-        public async Task <IEnumerable <TelemetryPortal.Models.Project>> GetAllProjectsAsync()
+        public async Task <IEnumerable <Project>> GetAllProjectsAsync()
         {
             return await techtrendsContext.Projects.ToListAsync();
         }
 
 
-        public async Task<TelemetryPortal.Models.Project> GetByIdAsync(int projectID)
+        public async Task<Project> GetByIdAsync(Guid projectID)
         {
-            return await techtrendsContext.Projects.FindAsync(projectID);
+            return await techtrendsContext.Set<Project>().FindAsync(projectID);
         }
 
-        public async Task <TelemetryPortal.Models.Project> InsertAsync (TelemetryPortal.Models.Project project)
+        public async Task <Project> InsertAsync (Project project)
         {
             techtrendsContext.Projects.Add(project);
             await techtrendsContext.SaveChangesAsync();
             return project;
         }
 
-        public async Task <TelemetryPortal.Models.Project> UpdateAsync (TelemetryPortal.Models.Project project)
+        public async Task <Project> UpdateAsync (Project project)
         {
             var existingProject = await techtrendsContext.Projects.FindAsync(project.ProjectId);
             if (existingProject != null)
@@ -49,13 +50,13 @@ namespace TelemetryPortal.Repository
             return project;
         }
 
-        public async Task DeleteAsync (int projectID)
+        public async Task DeleteAsync (Guid projectID)
         {
-            var projectToDelete = await techtrendsContext.Projects.FindAsync(projectID);
+            var projectToDelete = await techtrendsContext.Set<Project>().FindAsync(projectID);
 
             if (projectToDelete != null)
             {
-                techtrendsContext.Projects.Remove(projectToDelete);
+                techtrendsContext.Set<Project>().Remove(projectToDelete);
                 await techtrendsContext.SaveChangesAsync();
             }
             else
@@ -64,6 +65,10 @@ namespace TelemetryPortal.Repository
                 throw new Exception("Project not found");
             }
 
+        }
+        public async Task SaveChangesAsync()
+        {
+            await techtrendsContext.SaveChangesAsync();
         }
 
     }

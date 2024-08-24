@@ -32,7 +32,7 @@ builder.Services.AddDbContext<TechtrendsContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddScoped<IProjectsRepository, ProjectsRepository>();
-builder.Services.AddScoped<IClientsRepository, ClientsRepository>();
+builder.Services.AddScoped<IRepository<Client>, ClientsRepository>();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -41,7 +41,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-builder.Services.AddScoped<IClientsRepository, ClientsRepository>();
+builder.Services.AddScoped<IRepository<Client>, ClientsRepository>();
 builder.Services.AddScoped<IProjectsRepository, ProjectsRepository>();
 
 var app = builder.Build();
@@ -72,8 +72,4 @@ app.MapAdditionalIdentityEndpoints();
 app.Run();
 
 
-<<<<<<< HEAD
 
-
-=======
->>>>>>> cc7a4de7b06adad18bc9fb047dc96a39d208af56

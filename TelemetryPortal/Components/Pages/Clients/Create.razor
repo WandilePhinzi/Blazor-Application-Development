@@ -2,6 +2,7 @@
 @using Microsoft.EntityFrameworkCore
 @using TelemetryPortal.Data
 @using TelemetryPortal.Models
+@using TelemetryPortal.Repository
 @rendermode InteractiveServer
 
 <h3>Create New Client</h3>
@@ -30,8 +31,9 @@
 </EditForm>
 
 @code {
+
     [Inject]
-    TechtrendsContext DbContext { get; set; }
+    IRepository <Client> ClientsRepository { get; set; }  // Inject IClientsRepository
     [Inject]
     NavigationManager navigationManager { get; set; }
 
@@ -40,12 +42,7 @@
     private async Task HandleValidSubmit()
     {
         newClient.ClientId = Guid.NewGuid();
-
-        // Add the new client to the database
-        DbContext.Clients.Add(newClient);
-        await DbContext.SaveChangesAsync();
-
-        // Redirect to the clients list page
+        await ClientsRepository.InsertAsync(newClient);
         navigationManager.NavigateTo("/clients");
     }
 }

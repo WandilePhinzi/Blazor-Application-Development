@@ -3,6 +3,7 @@
 @using TelemetryPortal.Data
 @using TelemetryPortal.Models
 @rendermode InteractiveServer
+@using TelemetryPortal.Repository
 
 <h3>Edit Client</h3>
 
@@ -31,7 +32,7 @@
 
 @code {
     [Inject]
-    TechtrendsContext DbContext { get; set; }
+    IRepository <Client> ClientsRepository { get; set; }
     [Inject]
     NavigationManager navigationManager { get; set; }
 
@@ -42,7 +43,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        client = await DbContext.Clients.FindAsync(ClientId);
+        client = await ClientsRepository.GetByIdAsync(ClientId);
         if (client == null)
         {
             navigationManager.NavigateTo("/clients");
@@ -51,8 +52,8 @@
 
     private async Task HandleValidSubmit()
     {
-        DbContext.Clients.Update(client);
-        await DbContext.SaveChangesAsync();
+        ClientsRepository.UpdateAsync(client);
+        await ClientsRepository.SaveChangesAsync();
         navigationManager.NavigateTo("/clients");
     }
 }

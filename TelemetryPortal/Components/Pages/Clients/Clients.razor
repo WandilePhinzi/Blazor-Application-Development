@@ -48,25 +48,11 @@ else
     <p>No clients found.</p>
 }
 
-@code {
-    /*[Inject]
-    TechtrendsContext DbContext { get; set; }
+@code 
+{
+    //Inject repository
     [Inject]
-    NavigationManager navigationManager { get; set; }
-
-    private List<Client> clients;
-
-    protected override async Task OnInitializedAsync()
-    {
-        clients = await DbContext.Clients.ToListAsync();
-    }
-
-    public async Task Create()
-    {
-        navigationManager.NavigateTo("create-client");*/
-
-    [Inject]
-    IClientsRepository ClientsRepository { get; set; }  // Inject IClientsRepository
+    IRepository <Client> ClientsRepository { get; set; }  
     [Inject]
     NavigationManager navigationManager { get; set; }
 
