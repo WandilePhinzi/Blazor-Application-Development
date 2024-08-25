@@ -13,15 +13,15 @@ CRUD Operations: The application supports Create, Read, Update, and Delete (CRUD
 Repository Pattern: The repository pattern is implemented to separate data access logic from the application's core business logic.
 
 ## How to use the Application
-
 # Step 1
-Launch the Application: Open the application in a web browser.
+Launch the Application: Open the application in a web browser. The homepage of the web application will display after loading
 
-# Step 2(Registering as a user)
+# Step 2
 Register or Login: If you're a new user, register for an account. Existing users can log in using their credentials via the Login Tab.
+Registering as a new user will require you to verify the email you used when registering.
 
 # Step 3
-Navigate: Use the navigation menu to access the Projects and Clients sections.
+Navigate: Use the navigation menu to access the Projects and Clients sections. There you will see different clients and projects 
 
 # Step 4
 Manage Data: Create, edit, or delete projects and clients as needed.
