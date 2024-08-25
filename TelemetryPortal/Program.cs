@@ -31,8 +31,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDbContext<TechtrendsContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+//Register the ProjectRepository in the TechTrendsContext
 builder.Services.AddScoped<IProjectsRepository<Project>, ProjectsRepository>();
+//Register the ClientsRepository in the TechTrendsContext
 builder.Services.AddScoped<IRepository<Client>, ClientsRepository>();
+// Register the DbContext with the DI container using the connection string from appsettings.json
+builder.Services.AddDbContext<ITechTrendsContext, TechtrendsContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()

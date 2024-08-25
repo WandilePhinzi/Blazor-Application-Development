@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage;
 using TelemetryPortal.Models;
 
 namespace TelemetryPortal.Data;
 
-public partial class TechtrendsContext : DbContext
+public partial class TechtrendsContext : DbContext, ITechTrendsContext
 {
     public TechtrendsContext()
     {
@@ -59,5 +61,19 @@ public partial class TechtrendsContext : DbContext
         OnModelCreatingPartial(modelBuilder);
     }
 
+    public async Task<int> SaveChangesAsync()
+    {
+        return await base.SaveChangesAsync();
+    }
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await base.Database.BeginTransactionAsync();
+    }
+
+    public EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class
+    {
+        return base.Entry(entity);
+    }
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

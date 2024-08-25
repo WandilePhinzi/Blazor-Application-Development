@@ -3,38 +3,43 @@ using TelemetryPortal.Data;
 
 namespace TelemetryPortal.Repository
 {
+    // A generic repository implementation for managing entities in the database.
     public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        private readonly TechtrendsContext techtrendsContext;
+        private readonly ITechTrendsContext techtrendsContext;
 
-        public async Task<IEnumerable<TEntity>> GetAllClientsAsync()
+        // Retrieves all entities from the database.
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             return await techtrendsContext.Set<TEntity>().ToListAsync();
         }
-
+        // Retrieves a specific entity by its unique identifier.
         public async Task<TEntity> GetByIdAsync(Guid id)
         {
             return await techtrendsContext.Set<TEntity>().FindAsync(id);
         }
-
-        public async Task<TEntity> InsertAsync(TEntity client)
+        // Inserts a new entity into the database.
+        public async Task<TEntity> InsertAsync(TEntity entity)
         {
-            techtrendsContext.Set<TEntity>().Add(client);
+            techtrendsContext.Set<TEntity>().Add(entity);
             await techtrendsContext.SaveChangesAsync();
-            return client;
+            return entity;
         }
-        public async Task<TEntity> UpdateAsync(TEntity client)
+        // Updates an existing entity in the database.
+        public async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            var existingEntity = await techtrendsContext.Set<TEntity>().FindAsync(client);
+            // Assuming the entity has a primary key property named "Id"
+            var existingEntity = await techtrendsContext.Set<TEntity>().FindAsync(entity);
             if (existingEntity == null)
             {
-                throw new Exception("Client not found");
+                throw new Exception("Entity not found");
             }
-
-            techtrendsContext.Entry(existingEntity).CurrentValues.SetValues(client);
+            // Updates the existing entity with the values from the provided entity
+            techtrendsContext.Entry(existingEntity).CurrentValues.SetValues(entity);
             await techtrendsContext.SaveChangesAsync();
-            return client;
+            return entity;
         }
+        // Deletes a specific entity from the database by its unique identifier.
         public async Task DeleteAsync(Guid id)
         {
             var entityToDelete = await techtrendsContext.Set<TEntity>().FindAsync(id);
@@ -46,9 +51,10 @@ namespace TelemetryPortal.Repository
             }
             else
             {
-                throw new Exception("Client not found");
+                throw new Exception("Entity not found");
             }
         }
+        // Saves all changes made in the context to the database.
         public async Task SaveChangesAsync()
         {
             await techtrendsContext.SaveChangesAsync();

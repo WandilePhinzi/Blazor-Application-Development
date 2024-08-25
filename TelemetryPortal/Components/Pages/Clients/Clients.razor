@@ -60,7 +60,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        clients = await ClientsRepository.GetAllClientsAsync();
+        clients = await ClientsRepository.GetAllAsync();
     }
 
     public async Task Create()
