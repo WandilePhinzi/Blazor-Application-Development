@@ -1,0 +1,59 @@
+﻿@page "/edit-client/{ClientId:guid}"
+@using Microsoft.EntityFrameworkCore
+@using TelemetryPortal.Data
+@using TelemetryPortal.Models
+@rendermode InteractiveServer
+@using TelemetryPortal.Repository
+
+<h3>Edit Client</h3>
+
+<EditForm Model="client" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="clientName">Client Name</label>
+        <InputText id="clientName" class="form-control" @bind-Value="client.ClientName" />
+    </div>
+
+    <div class="form-group">
+        <label for="primaryContactEmail">Primary Contact Email</label>
+        <InputText id="primaryContactEmail" class="form-control" @bind-Value="client.PrimaryContactEmail" />
+    </div>
+
+    <div class="form-group">
+        <label for="dateOnboarded">Date Onboarded</label>
+        <InputDate id="dateOnboarded" class="form-control" @bind-Value="client.DateOnboarded" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a class="btn btn-secondary" href="/clients">Back to List</a>
+</EditForm>
+
+@code {
+    [Inject]
+    IRepository <Client> ClientsRepository { get; set; }
+    [Inject]
+    NavigationManager navigationManager { get; set; }
+
+    [Parameter]
+    public Guid ClientId { get; set; }
+
+    private Client client = new Client();
+
+    protected override async Task OnInitializedAsync()
+    {
+        client = await ClientsRepository.GetByIdAsync(ClientId);
+        if (client == null)
+        {
+            navigationManager.NavigateTo("/clients");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        ClientsRepository.UpdateAsync(client);
+        await ClientsRepository.SaveChangesAsync();
+        navigationManager.NavigateTo("/clients");
+    }
+}

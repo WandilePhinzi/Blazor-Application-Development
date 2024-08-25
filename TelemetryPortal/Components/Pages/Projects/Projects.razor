@@ -1,0 +1,65 @@
+﻿@page "/projects"
+@using Microsoft.EntityFrameworkCore
+@using TelemetryPortal.Data
+@using TelemetryPortal.Models
+@rendermode InteractiveServer
+@using TelemetryPortal.Repository
+<PageTitle>Projects</PageTitle>
+
+<h1>Projects</h1>
+
+<p>
+    <button class="btn btn-primary" @onclick="Create">Create</button>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Project Name</th>
+            <th>Project Description</th>
+            <th>Project Creation Date</th>
+            <th>Project Status</th>
+            <th>Client ID</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (projects != null)
+        {
+            @foreach (var item in projects)
+            {
+                <tr>
+                    <td>@item.ProjectName</td>
+                    <td>@item.ProjectDescription</td>
+                    <td>@item.ProjectCreationDate</td>
+                    <td>@item.ProjectStatus</td>
+                    <td>@item.ClientId</td>
+                    <td>
+                        <a href="/edit-project/@item.ProjectId">Edit</a> |
+                        <a href="/details-project/@item.ProjectId">Details</a> |
+                        <a href="/delete-project/@item.ProjectId">Delete</a>
+                    </td>
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>
+
+
+@code {
+    [Inject]
+    IProjectsRepository<Project> ProjectsRepository { get; set; }
+    [Inject]
+    NavigationManager navigationManager { get; set; }
+    private List<Project> projects;
+
+    protected override async Task OnInitializedAsync()
+    {
+        projects = (List<Project>)await ProjectsRepository.GetAllProjectsAsync();
+    }
+
+    public async Task Create()
+    {
+        navigationManager.NavigateTo("create-project");
+    }
+}

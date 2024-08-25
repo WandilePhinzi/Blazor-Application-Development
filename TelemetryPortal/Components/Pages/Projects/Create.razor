@@ -1,0 +1,88 @@
+﻿@page "/create-project"
+@using TelemetryPortal.Data
+@using TelemetryPortal.Models
+@rendermode InteractiveServer
+@using TelemetryPortal.Repository
+
+<h3>Create New Project</h3>
+
+<EditForm Model="newProject" OnValidSubmit="HandleValidSubmit" FormName="CreateProjectForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="projectName">Project Name</label>
+        <InputText id="projectName" class="form-control" @bind-Value="newProject.ProjectName" />
+    </div>
+
+    <div class="form-group">
+        <label for="projectDescription">Project Description</label>
+        <InputText id="projectDescription" class="form-control" @bind-Value="newProject.ProjectDescription"/>
+    </div>
+
+    <div class="form-group">
+        <label for="projectCreationDate">Project Creation Date</label>
+        <InputDate id="projectCreationDate" class="form-control" @bind-Value="newProject.ProjectCreationDate"/>
+    </div>
+
+    <div class="form-group">
+        <label for="projectStatus">Project Status</label>
+        <InputText id="projectStatus" class="form-control" @bind-Value="newProject.ProjectStatus"/>
+    </div>
+
+    <div class="form-group">
+        <label for="ClientId">Client ID</label>
+        <InputText id="clientId" class="form-control" @bind-Value="ClientIdString" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a class="btn btn-secondary" href="/projects">Back to List</a>
+
+</EditForm>
+
+@code {
+    [Inject]
+    IProjectsRepository <Project> ProjectsRepository { get; set; }
+    [Inject]
+    NavigationManager navigationManager { get; set; }
+
+    private Project newProject = new Project();
+
+    // Use a string property to bind the GUID
+    private string ClientIdString
+    {
+        get => newProject.ClientId.ToString();
+        set
+        {
+            if (Guid.TryParse(value, out var guid))
+            {
+                newProject.ClientId = guid;
+            }
+            else
+            {
+                newProject.ClientId = Guid.Empty; // Or handle the error case as needed
+            }
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (newProject != null)
+        {
+            // Output project details to ensure they are populated
+            Console.WriteLine($"ProjectName: {newProject.ProjectName}");
+            Console.WriteLine($"ProjectDescription: {newProject.ProjectDescription}");
+            Console.WriteLine($"ProjectCreationDate: {newProject.ProjectCreationDate}");
+            Console.WriteLine($"ProjectStatus: {newProject.ProjectStatus}");
+            Console.WriteLine($"ClientId: {newProject.ClientId}");
+
+            await ProjectsRepository.InsertAsync(newProject);
+            await ProjectsRepository.SaveChangesAsync();
+            navigationManager.NavigateTo("/projects");
+        }
+        else
+        {
+            Console.WriteLine("newProject is null");
+        }
+    }
+}

@@ -1,0 +1,47 @@
+﻿@page "/details-client/{ClientId:guid}"
+@using Microsoft.EntityFrameworkCore
+@using TelemetryPortal.Data
+@using TelemetryPortal.Models
+@rendermode InteractiveServer
+@using TelemetryPortal.Repository
+
+<h3>Client Details</h3>
+
+@if (client == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">@client.ClientName</h5>
+            <p class="card-text"><strong>Email:</strong> @client.PrimaryContactEmail</p>
+            <p class="card-text"><strong>Date Onboarded:</strong> @client.DateOnboarded</p>
+
+            <a class="btn btn-primary" href="/edit-client/@client.ClientId">Edit</a>
+            <a class="btn btn-secondary" href="/clients">Back to List</a>
+        </div>
+    </div>
+}
+
+@code {
+    [Inject]
+    IRepository <Client> ClientsRepository { get; set; }
+    [Inject]
+    NavigationManager navigationManager { get; set; }
+
+    [Parameter]
+    public Guid ClientId { get; set; }
+
+    private Client client;
+
+    protected override async Task OnInitializedAsync()
+    {
+        client = await ClientsRepository.GetByIdAsync(ClientId);
+        if (client == null)
+        {
+            navigationManager.NavigateTo("/clients");
+        }
+    }
+}
