@@ -1,4 +1,4 @@
-# CMPG-323-Project-3-41580117
+# Blazor Application Development
 
 ## Overview
 This project involves improving an exiting Blazor Application that manages CRUD operations for the project and client data.
