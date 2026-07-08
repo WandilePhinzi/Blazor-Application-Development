@@ -2,8 +2,8 @@
 
 ## Overview
 This project involves improving an exiting Blazor Application that manages CRUD operations for the project and client data.
-It adheres to repository patterns , coding principles and desin patterns.The main objective is to implement repository class
-Transfer the data access operations and ensure the application adheres to good aoftware practices
+It adheres to repository patterns , coding principles and desing patterns.The main objective is to implement repository class
+Transfer the data access operations and ensure the application adheres to good software practices
 
 ## Key Features
 User Registration and Login: Users can create accounts and log in securely to access the application's functionalities.
